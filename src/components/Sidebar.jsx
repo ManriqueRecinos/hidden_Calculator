@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -84,9 +85,10 @@ export default function Sidebar() {
           <nav className="flex-1 overflow-y-auto p-4">
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/calculator"
                   className="flex items-center p-2 rounded-md hover:bg-gray-700"
+                  onClick={() => setIsOpen(false)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +105,7 @@ export default function Sidebar() {
                     />
                   </svg>
                   Calculadora
-                </a>
+                </Link>
               </li>
               <li>
                 <a
