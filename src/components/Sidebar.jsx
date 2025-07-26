@@ -11,11 +11,10 @@ export default function Sidebar() {
   return (
     <>
       {/* Overlay para dispositivos móviles */}
-      <div 
+      <div
         onClick={toggleSidebar}
-        className={`fixed inset-0 bg-black bg-opacity-50 z-20 transition-opacity duration-300 ease-in-out lg:hidden ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-50 z-20 transition-opacity duration-300 ease-in-out lg:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
       />
 
       {/* Botón para abrir/cerrar sidebar en móvil */}
@@ -51,13 +50,15 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-30 w-64 h-full bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:static lg:h-screen text-white`}
+        className={`fixed top-0 left-0 z-30 w-64 h-full bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:static lg:h-screen text-white`}
       >
         <div className="flex flex-col h-full">
           {/* Header del sidebar */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <Link
+            to="/"
+            className="flex items-center justify-between p-4 border-b border-gray-700"
+          >
             <h2 className="text-xl font-bold text-white">Hidden Calculator</h2>
             <button
               onClick={toggleSidebar}
@@ -79,7 +80,7 @@ export default function Sidebar() {
                 />
               </svg>
             </button>
-          </div>
+          </Link>
 
           {/* Contenido del sidebar */}
           <nav className="flex-1 overflow-y-auto p-4">
@@ -183,6 +184,7 @@ export default function Sidebar() {
           </nav>
 
           {/* Footer del sidebar */}
+
           <div className="p-4 border-t border-gray-700">
             <a
               href="#"
@@ -204,7 +206,11 @@ export default function Sidebar() {
               </svg>
               Cerrar Sesión
             </a>
+            <div className="p-2 text-left text-xs border-gray-700">
+              <p>Version 1.0.0</p>
+            </div>
           </div>
+
         </div>
       </aside>
     </>
