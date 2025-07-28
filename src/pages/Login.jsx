@@ -6,8 +6,6 @@ import { login } from "../../services/api"
 import { isAuthenticated } from "../utils/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 export default function Login() {
   const history = useHistory()
@@ -60,56 +58,28 @@ export default function Login() {
 
       console.log("Login exitoso:", data)
 
-      // Mostrar mensaje de éxito con toast
-      toast.success("¡Inicio de sesión exitoso!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-      })
+      // Mostrar mensaje de éxito
+      alert("¡Login exitoso! Redirigiendo...")
       
       // Redirigir a la página principal o a la página desde donde fue redirigido
-      setTimeout(() => {
-        history.replace(location.state?.from || "/")
-      }, 1000)
+      history.replace(location.state?.from || "/")
     } catch (error) {
       console.error("Error en login:", error)
       
       if (error.response) {
         // El servidor respondió con un código de estado diferente de 2xx
-        let errorMsg = "";
         switch (error.response.status) {
           case 401:
-            errorMsg = "Credenciales inválidas o cuenta no verificada";
+            setError("Credenciales inválidas o cuenta no verificada")
             break
           case 400:
-            errorMsg = "Se requiere nombre de usuario y contraseña";
+            setError("Se requiere nombre de usuario y contraseña")
             break
           default:
-            errorMsg = "Error inesperado. Intenta nuevamente";
+            setError("Error inesperado. Intenta nuevamente")
         }
-        setError(errorMsg);
-        toast.error(errorMsg, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
       } else {
-        const errorMsg = "Error de conexión. Verifica tu conexión a internet";
-        setError(errorMsg);
-        toast.error(errorMsg, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
+        setError("Error de conexión. Verifica tu conexión a internet")
       }
     } finally {
       setLoading(false)
@@ -124,7 +94,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Espacio para logo/imagen */}
         <div className="flex justify-center mb-6">

@@ -6,8 +6,6 @@ import { register } from "../../services/api"
 import { isAuthenticated } from "../utils/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 export default function Register() {
   const history = useHistory()
@@ -75,58 +73,36 @@ export default function Register() {
         null // imagen (null por ahora)
       )
 
-      console.log("Registro exitoso:", data)
-
-      // Mostrar mensaje de éxito con toast
-      toast.success("¡Registro exitoso! Redirigiendo al login...", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-      })
+      console.log("Usuario creado con ID:", data.id)
+      setSuccess(true)
       
-      // Redirigir al login después de un breve retraso para que se vea el toast
+      // Opcional: redirigir al login después de un tiempo
       setTimeout(() => {
-        history.push("/login")
+        history.push('/login')
       }, 2000)
     } catch (error) {
       console.error("Error en registro:", error)
       
       if (error.response) {
-        // El servidor respondió con un código de estado diferente de 2xx
-        let errorMsg = "";
+        // Manejar diferentes tipos de error según la respuesta
         switch (error.response.status) {
-          case 400:
-            errorMsg = "Datos inválidos. Verifica la información proporcionada.";
-            break
           case 409:
-            errorMsg = "El usuario o correo ya está registrado.";
+            if (error.response.data.detail && error.response.data.detail.includes("nombre de usuario")) {
+              setError("El nombre de usuario ya existe")
+            } else if (error.response.data.detail && error.response.data.detail.includes("correo")) {
+              setError("El correo electrónico ya está registrado")
+            } else {
+              setError("El usuario o correo ya existe en el sistema")
+            }
+            break
+          case 400:
+            setError("Error al crear el usuario. Verifica los datos ingresados")
             break
           default:
-            errorMsg = "Error inesperado. Intenta nuevamente.";
+            setError("Error inesperado. Intenta nuevamente")
         }
-        setError(errorMsg);
-        toast.error(errorMsg, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
       } else {
-        const errorMsg = "Error de conexión. Verifica tu conexión a internet.";
-        setError(errorMsg);
-        toast.error(errorMsg, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
+        setError("Error de conexión. Verifica tu conexión a internet")
       }
     } finally {
       setLoading(false)
@@ -141,7 +117,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
-      <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Espacio para logo/imagen */}
         <div className="flex justify-center mb-6">
