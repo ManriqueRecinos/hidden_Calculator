@@ -6,6 +6,7 @@ import { login } from "../../services/api"
 import { isAuthenticated } from "../utils/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
+import { toast } from "react-toastify"
 
 export default function Login() {
   const history = useHistory()
@@ -58,8 +59,8 @@ export default function Login() {
 
       console.log("Login exitoso:", data)
 
-      // Mostrar mensaje de éxito
-      alert("¡Login exitoso! Redirigiendo...")
+      // Mostrar mensaje de éxito con toast
+      toast.success("¡Inicio de sesión exitoso!")
       
       // Redirigir a la página principal o a la página desde donde fue redirigido
       history.replace(location.state?.from || "/")
@@ -70,15 +71,19 @@ export default function Login() {
         // El servidor respondió con un código de estado diferente de 2xx
         switch (error.response.status) {
           case 401:
+            toast.error("Credenciales inválidas o cuenta no verificada")
             setError("Credenciales inválidas o cuenta no verificada")
             break
           case 400:
+            toast.error("Se requiere nombre de usuario y contraseña")
             setError("Se requiere nombre de usuario y contraseña")
             break
           default:
+            toast.error("Error inesperado. Intenta nuevamente")
             setError("Error inesperado. Intenta nuevamente")
         }
       } else {
+        toast.error("Error de conexión. Verifica tu conexión a internet")
         setError("Error de conexión. Verifica tu conexión a internet")
       }
     } finally {

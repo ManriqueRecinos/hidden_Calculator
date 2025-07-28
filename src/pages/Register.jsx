@@ -6,6 +6,7 @@ import { register } from "../../services/api"
 import { isAuthenticated } from "../utils/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
+import { toast } from "react-toastify"
 
 export default function Register() {
   const history = useHistory()
@@ -57,6 +58,7 @@ export default function Register() {
 
     // Validar que las contraseñas coincidan
     if (formData.contrasenia !== formData.confirmPassword) {
+      toast.error("Las contraseñas no coinciden")
       setError("Las contraseñas no coinciden")
       return
     }
@@ -76,32 +78,34 @@ export default function Register() {
       console.log("Usuario creado con ID:", data.id)
       setSuccess(true)
       
-      // Opcional: redirigir al login después de un tiempo
-      setTimeout(() => {
-        history.push('/login')
-      }, 2000)
+      // Mostrar mensaje de éxito con toast y redirigir a login
+      toast.success("¡Registro exitoso! Ahora puedes iniciar sesión.")
+      history.push("/login")
     } catch (error) {
       console.error("Error en registro:", error)
       
       if (error.response) {
         // Manejar diferentes tipos de error según la respuesta
         switch (error.response.status) {
-          case 409:
-            if (error.response.data.detail && error.response.data.detail.includes("nombre de usuario")) {
-              setError("El nombre de usuario ya existe")
-            } else if (error.response.data.detail && error.response.data.detail.includes("correo")) {
-              setError("El correo electrónico ya está registrado")
+          case 400:
+            if (error.response.data && error.response.data.detail) {
+              toast.error(error.response.data.detail)
+              setError(error.response.data.detail)
             } else {
-              setError("El usuario o correo ya existe en el sistema")
+              toast.error("Datos de registro inválidos")
+              setError("Datos de registro inválidos")
             }
             break
-          case 400:
-            setError("Error al crear el usuario. Verifica los datos ingresados")
+          case 409:
+            toast.error("El usuario o correo ya existe")
+            setError("El usuario o correo ya existe")
             break
           default:
+            toast.error("Error inesperado. Intenta nuevamente")
             setError("Error inesperado. Intenta nuevamente")
         }
       } else {
+        toast.error("Error de conexión. Verifica tu conexión a internet")
         setError("Error de conexión. Verifica tu conexión a internet")
       }
     } finally {
